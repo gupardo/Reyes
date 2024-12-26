@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lista de Regalos - Guillermo Pardo</title>
+  <!-- Google Fonts (Poppins) -->
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      /* Variables de Glassmorphism */
+      --color-glass: rgba(255, 255, 255, 0.15);
+      --color-glass-active: rgba(255, 255, 255, 0.25);
+      --color-border: rgba(255, 255, 255, 0.2);
+      --backdrop-blur: blur(6px);
+
+      --radius-big: 20px;
+      --primary-color: #fff;
+    }
+
+    /* RESET */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--primary-color);
+
+      /*
+        Fondo con capa oscura semitransparente + imagen fija:
+        - linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)) => oscurece
+        - url(...) => imagen de fondo
+        - background-attachment: fixed => la imagen queda fija
+      */
+      background:
+        linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+        url("https://i.pinimg.com/736x/4f/c8/02/4fc80224be72722117259cf541451f68.jpg")
+          center center no-repeat fixed;
+      background-size: cover;
+
+      min-height: 100vh;
+      overflow-x: hidden; 
+      padding: 1rem;
+    }
+
+    /* CONTENIDO PRINCIPAL */
+    .page-content {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .page-content h1 {
+      text-align: center;
+      margin-bottom: 0rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    
+    .page-content h4 {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    /* ===== TARJETAS (GLASS) ===== */
+    .gift-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .gift-item {
+      border-radius: var(--radius-big);
+      background: var(--color-glass);
+      backdrop-filter: var(--backdrop-blur);
+      -webkit-backdrop-filter: var(--backdrop-blur);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--color-border);
+
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+      
+      /* Animación de aparición */
+      opacity: 0;
+      transform: translateX(-60px);
+    }
+    .gift-item:hover {
+      transform: translateY(-3px);
+    }
+    .gift-item.active {
+      background: var(--color-glass-active);
+    }
+    .gift-item.animate-gift {
+      animation: slideInLeft 0.8s forwards;
+    }
+    @keyframes slideInLeft {
+      0% {
+        transform: translateX(-60px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .gift-header {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+    }
+    .gift-image-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+      margin-right: 1rem;
+      border-radius: 50%;
+
+      background: var(--color-glass);
+      backdrop-filter: var(--backdrop-blur);
+      -webkit-backdrop-filter: var(--backdrop-blur);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--color-border);
+      flex-shrink: 0;
+    }
+    .gift-image {
+      width: 80%;
+      height: 80%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .gift-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      flex-grow: 1;
+    }
+
+    .gift-arrow {
+      width: 24px;
+      height: 24px;
+      transition: transform 0.3s ease;
+      fill: var(--primary-color);
+    }
+    .rotate {
+      transform: rotate(180deg);
+    }
+
+    .gift-details {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.4s ease, opacity 0.3s ease;
+      padding: 0 1rem;
+    }
+    .gift-details.show {
+      max-height: 200px;
+      opacity: 1;
+      padding-bottom: 1rem;
+    }
+
+    .gift-info {
+      margin: 1rem 0;
+    }
+    .gift-info p {
+      margin-bottom: 0.5rem;
+    }
+    .gift-info a {
+      color: var(--primary-color);
+      text-decoration: underline;
+      font-weight: 600;
+    }
+
+    /* ===== BURBUJAS (GLASS) ===== */
+    .bubble-section {
+      margin-top: 3rem;
+    }
+    .bubble-section h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.6rem;
+      font-weight: 600;
+    }
+
+    .bubble-list {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .bubble-item {
+      flex: 1 1 calc(33.33% - 1rem);
+      max-width: 250px;
+      text-align: center;
+      margin: 0 auto;
+      transition: transform 0.2s;
+    }
+
+
+    /* 
+      REDUCIMOS EL TAMAÑO DE LOS CÍRCULOS
+      Antes: 200px
+      Ahora: 150px
+    */
+    .bubble-circle {
+      width: 150px;
+      height: 150px;
+      margin: 0 auto;
+      border-radius: 50%;
+      background: var(--color-glass);
+      backdrop-filter: var(--backdrop-blur);
+      -webkit-backdrop-filter: var(--backdrop-blur);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--color-border);
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      opacity: 0;
+      transform: scale(0.8) rotate(0deg);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+    /* Animación de entrada de las burbujas */
+    .bubble-circle.animate-bubble {
+      animation: bubbleIn 1s forwards ease-in-out;
+    }
+    @keyframes bubbleIn {
+      0% {
+        transform: scale(0.5) rotate(0deg);
+        opacity: 0;
+      }
+      50% {
+        transform: scale(1.2) rotate(180deg);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1) rotate(360deg);
+        opacity: 1;
+      }
+    }
+
+    .bubble-title {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: var(--primary-color);
+      text-align: center;
+      max-width: 80%;
+    }
+
+    /* Simulación de pulsado (“hundirse”) */
+    .bubble-circle.bubble-press {
+      transform: scale(0.95) translateY(0px);
+      box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      margin-top: 2rem;
+      text-align: center;
+      color: var(--primary-color);
+      font-size: 0.9rem;
+      padding: 1rem;
+    }
+
+    /* ===== RESPONSIVE TARJETAS ===== */
+    @media (min-width: 768px) {
+      .gift-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+    }
+
+    /* ===== RESPONSIVE BURBUJAS ===== */
+    @media (max-width: 600px) {
+      .bubble-item {
+        flex: 1 1 100%;
+      }
+      .bubble-circle {
+        width: 130px; /* aún más pequeño si deseas */
+        height: 130px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- CONTENIDO PRINCIPAL ENCIMA DEL FONDO OSCURECIDO -->
+  <div class="page-content">
+    <h1>Regalos de Reyes Magos</h1>
+    <h4>Guillermo Pardo</h4>
+
+    <section class="gift-list">
+      <!-- Tarjeta 1: Auriculares -->
+      <article class="gift-item">
+        <div class="gift-header">
+          <div class="gift-image-wrapper">
+            <img
+              class="gift-image"
+              src="https://moviliario.es/49093-large_default/auriculares-iphone-conector-lightning-manos-libres.jpg"
+              alt="Auriculares de cable Iphone"
+            />
+          </div>
+          <span class="gift-title">Auriculares de cable Iphone</span>
+          <svg class="gift-arrow" viewBox="0 0 24 24">
+            <path d="M7 10l5 5 5-5z"></path>
+          </svg>
+        </div>
+        <div class="gift-details">
+          <div class="gift-info">
+            <p><strong>Precio:</strong> 20€</p>
+            <p>
+              <strong>Motivo:</strong> Se me perdieron los que tenía :c 
+            </p>
+            <p>
+              <strong>Link:</strong>
+              <a
+                href="https://www.apple.com/es/shop/product/MWTY3ZM/A/earpods-conector-lightning"
+                target="_blank"
+                >Comprar aquí</a
+              >
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Tarjeta 2: Xiaomi Smart Band 9 Pro -->
+      <article class="gift-item">
+        <div class="gift-header">
+          <div class="gift-image-wrapper">
+            <img
+              class="gift-image"
+              src="https://www.simplytek.lk/cdn/shop/files/xiaomi_band_9_pro-simplytek-lk-sri-lanka_1.jpg?v=1732185076"
+              alt="Xiaomi Smart Band 9 Pro"
+            />
+          </div>
+          <span class="gift-title">Xiaomi Smart Band 9 Pro (Negro)</span>
+          <svg class="gift-arrow" viewBox="0 0 24 24">
+            <path d="M7 10l5 5 5-5z"></path>
+          </svg>
+        </div>
+        <div class="gift-details">
+          <div class="gift-info">
+            <p><strong>Precio:</strong> 70€</p>
+            <p>
+              <strong>Motivo:</strong> Es reloj y mide muchas cosas para cuando haga ejercicio.
+            </p>
+            <p>
+              <strong>Link:</strong>
+              <a
+                href="https://www.mi.com/es/product/xiaomi-smart-band-9-pro"
+                target="_blank"
+                >Comprar aquí</a
+              >
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Tarjeta 3: Colonia Invictus Victory -->
+      <article class="gift-item">
+        <div class="gift-header">
+          <div class="gift-image-wrapper">
+            <img
+              class="gift-image"
+              src="https://www.druni.es/media/catalog/product/5/1/5136.jpg"
+              alt="Invictus Victory"
+            />
+          </div>
+          <span class="gift-title">Colonia 50ml - Invictus Victory</span>
+          <svg class="gift-arrow" viewBox="0 0 24 24">
+            <path d="M7 10l5 5 5-5z"></path>
+          </svg>
+        </div>
+        <div class="gift-details">
+          <div class="gift-info">
+            <p><strong>Precio:</strong> 60€</p>
+            <p>
+              <strong>Motivo:</strong> Para oler bien en ocasiones especiales.
+            </p>
+            <p>
+              <strong>Link:</strong>
+              <a
+                href="https://www.primor.eu/es_es/rabanne-invictus-victory-eau-de-parfum-extreme-112440.html"
+                target="_blank"
+                >Comprar aquí</a
+              >
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Tarjeta 4: Soporte para portátil -->
+      <article class="gift-item">
+        <div class="gift-header">
+          <div class="gift-image-wrapper">
+            <img
+              class="gift-image"
+              src="https://m.media-amazon.com/images/I/71LkgWyEP2L._AC_SL1500_.jpg"
+              alt="Soporte para portátil"
+            />
+          </div>
+          <span class="gift-title">Soporte ajustable para portátil</span>
+          <svg class="gift-arrow" viewBox="0 0 24 24">
+            <path d="M7 10l5 5 5-5z"></path>
+          </svg>
+        </div>
+        <div class="gift-details">
+          <div class="gift-info">
+            <p><strong>Precio:</strong> 15€</p>
+            <p><strong>Motivo:</strong> Patra trabajar en el pórtatil cómodamente.</p>
+            <p>
+              <strong>Link:</strong>
+              <a
+                href="https://www.amazon.es/dp/B086V28W64/"
+                target="_blank"
+                >Comprar aquí</a
+              >
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Tarjeta 5: Cinta caminadora -->
+      <article class="gift-item">
+        <div class="gift-header">
+          <div class="gift-image-wrapper">
+            <img
+              class="gift-image"
+              src="https://apologym.es/wp-content/uploads/2024/08/31AIs7jUhKL._SL160_.jpg"
+              alt="Cinta de caminar"
+            />
+          </div>
+          <span class="gift-title">Cinta caminadora</span>
+          <svg class="gift-arrow" viewBox="0 0 24 24">
+            <path d="M7 10l5 5 5-5z"></path>
+          </svg>
+        </div>
+        <div class="gift-details">
+          <div class="gift-info">
+            <p><strong>Precio:</strong> 100€</p>
+            <p><strong>Motivo:</strong> Para no ponerme como un tonel y poder andar mientras estoy en el ordenador.</p>
+            <p>
+              <strong>Link:</strong>
+              <a
+                href="https://www.amazon.es/Superun-Dispositivo-Tecnolog%C3%ADa-Camidador-Multi-Jugador/dp/B0CWP7W9TY/"
+                target="_blank"
+                >Comprar aquí</a
+              >
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Tarjeta 6: Escritorio ajustable -->
+      <article class="gift-item">
+        <div class="gift-header">
+          <div class="gift-image-wrapper">
+            <img
+              class="gift-image"
+              src="https://topesdegama.com/app/uploads-topesdegama.com/2024/05/escritorio-e7-pro-flexispot.png?x=480&quality=80"
+              alt="Escritorio de altura ajustable"
+            />
+          </div>
+          <span class="gift-title">Escritorio ajustable (FSE7)</span>
+          <svg class="gift-arrow" viewBox="0 0 24 24">
+            <path d="M7 10l5 5 5-5z"></path>
+          </svg>
+        </div>
+        <div class="gift-details">
+          <div class="gift-info">
+            <p><strong>Precio:</strong> 430€</p>
+            <p>
+              <strong>Motivo:</strong> Para no estar sentado 24/7.
+            </p>
+            <p>
+              <strong>Link:</strong>
+              <a
+                href="https://www.flexispot.es/escritorio-regulable-electricamente-e7.html"
+                target="_blank"
+                >Comprar aquí</a
+              >
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Tarjeta 7: Xiaomi Light Bar -->
+      <article class="gift-item">
+        <div class="gift-header">
+          <div class="gift-image-wrapper">
+            <img
+              class="gift-image"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTX8ArBS7cMfZ5yJRpDunRuahwX2kvefKyEcQ&s"
+              alt="Light Bar Xiaomi"
+            />
+          </div>
+          <span class="gift-title">Xiaomi Mi Computer Monitor Light Bar</span>
+          <svg class="gift-arrow" viewBox="0 0 24 24">
+            <path d="M7 10l5 5 5-5z"></path>
+          </svg>
+        </div>
+        <div class="gift-details">
+          <div class="gift-info">
+            <p><strong>Precio:</strong> 45€</p>
+            <p><strong>Motivo:</strong> Es una luz de escritorio que va encima del ordenador.</p>
+            <p>
+              <strong>Link:</strong>
+              <a
+                href="https://www.amazon.es/Xiaomi-BHR4838GL-Colgante-Negro-Estandar/dp/B08W2C5W59/"
+                target="_blank"
+                >Comprar aquí</a
+              >
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Tarjeta 8: ¡Tráguese ese sapo! -->
+      <article class="gift-item">
+        <div class="gift-header">
+          <div class="gift-image-wrapper">
+            <img
+              class="gift-image"
+              src="https://m.media-amazon.com/images/I/712HLg3mTbL.jpg"
+              alt="¡Tráguese ese sapo!"
+            />
+          </div>
+          <span class="gift-title">¡Tráguese ese sapo!</span>
+          <svg class="gift-arrow" viewBox="0 0 24 24">
+            <path d="M7 10l5 5 5-5z"></path>
+          </svg>
+        </div>
+        <div class="gift-details">
+          <div class="gift-info">
+            <p><strong>Precio:</strong> 10€</p>
+            <p><strong>Motivo:</strong> Un libro que me ayudara a no morirme del estrés por el trabajo (espero)</p>
+            <p>
+              <strong>Link:</strong>
+              <a
+                href="https://www.amazon.es/%C2%A1Tr%C3%A1guese-ese-sapo-Ed-Revisada/dp/841699787X/"
+                target="_blank"
+                >Comprar aquí</a
+              >
+            </p>
+          </div>
+        </div>
+      </article>
+      
+      <!-- Tarjeta 9: Almohada -->
+      <article class="gift-item">
+        <div class="gift-header">
+          <div class="gift-image-wrapper">
+            <img
+              class="gift-image"
+              src="https://eu-images.contentstack.com/v3/assets/blt167b24547e5b1906/blt1ea0177db034e01a/66ffb9741ae347742b9e3473/9XP591J3_Thermosync_Pillow_v2_3_(1).jpg?format=pjpg&auto=webp&quality=80&width=3840&disable=upscale"
+              alt="Escritorio de altura ajustable"
+            />
+          </div>
+          <span class="gift-title">Almohada Emma Viscoelástica</span>
+          <svg class="gift-arrow" viewBox="0 0 24 24">
+            <path d="M7 10l5 5 5-5z"></path>
+          </svg>
+        </div>
+        <div class="gift-details">
+          <div class="gift-info">
+            <p><strong>Precio:</strong> 70€</p>
+            <p>
+              <strong>Motivo:</strong> Con esto tendré sueño de calidad para ir al trabajo descansado.
+            </p>
+            <p>
+              <strong>Link:</strong>
+              <a
+                href="https://www.flexispot.es/escritorio-regulable-electricamente-e7.html"
+                target="_blank"
+                >Comprar aquí</a
+              >
+            </p>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- BURBUJAS (OTROS REGALOS) -->
+    <section class="bubble-section">
+      <h2>Otros Regalos</h2>
+      <div class="bubble-list">
+        <div class="bubble-item">
+          <div class="bubble-circle">
+            <span class="bubble-title">Cajonera</span>
+          </div>
+        </div>
+        <div class="bubble-item">
+          <div class="bubble-circle">
+            <span class="bubble-title">Ropa oficina</span>
+          </div>
+        </div>
+        <div class="bubble-item">
+          <div class="bubble-circle">
+            <span class="bubble-title">Dinero</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <p>Hecho con ❤ para los Reyes Magos</p>
+    </footer>
+  </div>
+
+  <script>
+    // EXPANSIÓN DE CADA REGALO (detalles)
+    const giftItems = document.querySelectorAll('.gift-item');
+    giftItems.forEach(item => {
+      const header = item.querySelector('.gift-header');
+      const arrow = item.querySelector('.gift-arrow');
+      const details = item.querySelector('.gift-details');
+
+      header.addEventListener('click', () => {
+        details.classList.toggle('show');
+        arrow.classList.toggle('rotate');
+        item.classList.toggle('active');
+      });
+    });
+
+    // ANIMACIONES DE APARICIÓN (IntersectionObserver)
+    // 1) Tarjetas
+    const giftObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-gift');
+          giftObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    giftItems.forEach(gift => giftObserver.observe(gift));
+
+    // 2) Burbujas
+    const bubbleCircles = document.querySelectorAll('.bubble-circle');
+    const bubbleObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-bubble');
+          bubbleObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    bubbleCircles.forEach(bubble => bubbleObserver.observe(bubble));
+
+    // Efecto "botón pulsado" en burbujas
+    bubbleCircles.forEach(circle => {
+      circle.addEventListener('click', () => {
+        circle.classList.add('bubble-press');
+        setTimeout(() => {
+          circle.classList.remove('bubble-press');
+        }, 200);
+      });
+    });
+  </script>
+</body>
+</html>
